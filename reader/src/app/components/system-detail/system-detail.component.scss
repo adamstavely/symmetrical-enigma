@@ -1,0 +1,105 @@
+.detail-panel {
+  padding: var(--spacing-lg);
+  background-color: var(--color-bg-panel);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-iron);
+  min-width: 280px;
+  max-width: 360px;
+}
+
+.detail-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.detail-title {
+  font-family: var(--font-heading);
+  font-size: var(--size-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.detail-heading {
+  font-size: var(--size-md);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.detail-description {
+  font-size: var(--size-sm);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-md);
+  line-height: var(--line-height-relaxed);
+}
+
+.detail-meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--size-sm);
+  margin: 0;
+}
+
+.detail-meta dt {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.detail-meta dd {
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.detail-meta a {
+  color: var(--color-link);
+  word-break: break-all;
+}
+
+.detail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.detail-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.detail-list-item:not(.static):hover {
+  background-color: var(--color-surface-iron);
+}
+
+.detail-list-item.static {
+  cursor: default;
+}
+
+.detail-list-name {
+  font-weight: var(--weight-medium);
+}
+
+.detail-list-meta {
+  font-size: var(--size-xs);
+  color: var(--color-text-muted);
+}
+
+.detail-empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--size-sm);
+}

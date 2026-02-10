@@ -1,0 +1,14 @@
+@if (open()) {
+  <div class="export-backdrop" (click)="close()" role="button" tabindex="0" (keydown.escape)="close()">
+    <div class="export-modal" (click)="$event.stopPropagation()" role="dialog" aria-labelledby="export-title">
+      <h2 id="export-title" class="export-title">Export diagram</h2>
+      <p class="export-description">Choose format (target &lt;3s per NFR).</p>
+      <div class="export-actions">
+        <button type="button" class="export-btn" (click)="choose('png')">PNG</button>
+        <button type="button" class="export-btn" (click)="choose('svg')">SVG</button>
+        <button type="button" class="export-btn" (click)="choose('pdf')">PDF</button>
+      </div>
+      <button type="button" class="export-close" (click)="close()" aria-label="Close">×</button>
+    </div>
+  </div>
+}

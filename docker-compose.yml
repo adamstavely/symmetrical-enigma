@@ -1,0 +1,86 @@
+services:
+  neo4j:
+    image: neo4j:5.15-community
+    container_name: edda-vault
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-eddapassword}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_dbms_memory_heap_max__size=4G
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - ./vault/scripts:/scripts
+    networks:
+      - edda
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7474"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: edda-api
+    ports:
+      - "8000:8000"
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD:-eddapassword}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:4200,http://localhost:4201,http://localhost:3000}
+    depends_on:
+      neo4j:
+        condition: service_started
+    networks:
+      - edda
+    restart: on-failure
+
+  reader:
+    build:
+      context: ./reader
+      dockerfile: Dockerfile
+    container_name: edda-reader
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - edda
+
+  warden:
+    build:
+      context: .
+      dockerfile: warden/Dockerfile
+    container_name: edda-warden
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD:-eddapassword}
+      - GIT_BASE_URL=${GIT_BASE_URL:-}
+      - GIT_TOKEN=${GIT_TOKEN:-}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      - DRIFT_CHECK_SCHEDULE=${DRIFT_CHECK_SCHEDULE:-0 2 * * *}
+      - DRIFT_ALERT_MIN_SEVERITY=${DRIFT_ALERT_MIN_SEVERITY:-high}
+      - DRIFT_AUTO_UPDATE=${DRIFT_AUTO_UPDATE:-false}
+      - DRIFT_AUTO_UPDATE_MAX=${DRIFT_AUTO_UPDATE_MAX:-3}
+      - WARDEN_RUN_ONCE=${WARDEN_RUN_ONCE:-false}
+      - WARDEN_CLONE_DIR=/tmp/warden-repos
+      - USE_MOCK_LLM=true
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    networks:
+      - edda
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+
+networks:
+  edda:
+    driver: bridge

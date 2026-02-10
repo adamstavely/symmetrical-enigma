@@ -1,0 +1,18 @@
+@if (versions.length > 0) {
+  <div class="version-picker">
+    <label class="version-picker__label">Point-in-time</label>
+    <select
+      class="version-picker__select"
+      [value]="selectedVersionId ?? ''"
+      (change)="onSelectChange($event)"
+    >
+      <option value="">Latest</option>
+      @for (v of versions; track v.id) {
+        <option [value]="v.id">{{ formatDate(v.analyzed_at) }}{{ v.commit_sha ? ' (' + (v.commit_sha.slice(0, 7)) + ')' : '' }}</option>
+      }
+    </select>
+    @if (selectedVersionId) {
+      <button type="button" class="version-picker__clear" (click)="onClear()">Show latest</button>
+    }
+  </div>
+}

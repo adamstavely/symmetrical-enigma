@@ -1,0 +1,42 @@
+<div class="architecture-view">
+  @if (error()) {
+    <div class="view-error">
+      <p>{{ error() }}</p>
+    </div>
+  }
+  @if (loading()) {
+    <div class="view-loading">Loading…</div>
+  }
+  <div class="view-content">
+    <div class="view-graph-section">
+      <div class="view-toolbar">
+        @if (systemId(); as sid) {
+          <app-version-picker
+            [versions]="versions()"
+            [selectedVersionId]="versionId()"
+            (versionSelect)="onVersionSelect($event)"
+            (clearVersion)="onVersionClear()"
+          />
+        }
+        <button type="button" class="view-export-btn" (click)="openExport()">Export</button>
+      </div>
+      <app-architecture-graph
+        [nodes]="graphNodes()"
+        [edges]="graphEdges()"
+        (nodeSelect)="onNodeSelect($event)"
+      />
+    </div>
+    <aside class="view-detail-section">
+      <app-system-detail
+        [system]="system() ?? null"
+        [container]="container() ?? null"
+        (containerSelect)="onContainerSelect($event)"
+      />
+    </aside>
+  </div>
+  <app-export-dialog
+    [open]="exportDialogOpen()"
+    (exportFormat)="onExportFormat($event)"
+    (closed)="onExportClosed()"
+  />
+</div>

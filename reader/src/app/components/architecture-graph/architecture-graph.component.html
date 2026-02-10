@@ -1,0 +1,8 @@
+<div class="graph-wrapper">
+  <div #cyContainer class="graph-container" role="img" [attr.aria-label]="'Architecture diagram with ' + nodesSet().length + ' nodes'"></div>
+  @if (loading() && nodesSet().length === 0) {
+    <div class="graph-placeholder">
+      <p>Load enterprise view or select a system to see the diagram.</p>
+    </div>
+  }
+</div>

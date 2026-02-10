@@ -1,0 +1,43 @@
+<div class="search-bar">
+  <input
+    type="search"
+    class="search-input"
+    [value]="query()"
+    (input)="onInput($any($event.target).value)"
+    placeholder="Search systems, containers…"
+    aria-label="Search architecture"
+    autocomplete="off"
+  />
+  <select
+    class="search-filter"
+    [value]="groupFilter()"
+    (change)="onGroupChange($any($event.target).value)"
+    aria-label="Filter by group"
+  >
+    <option value="">All groups</option>
+    @for (g of groups(); track g) {
+      <option [value]="g">{{ g }}</option>
+    }
+  </select>
+  @if (loading()) {
+    <span class="search-loading" aria-hidden="true">…</span>
+  }
+  @if (open() && (results().length > 0 || query().length >= 2)) {
+    <div class="search-dropdown">
+      @if (results().length === 0) {
+        <p class="search-empty">No results</p>
+      } @else {
+        <ul class="search-results">
+          @for (r of results(); track r.id) {
+            <li>
+              <button type="button" class="search-result-item" (click)="selectResult(r)">
+                <span class="search-result-type">{{ r.type }}</span>
+                <span class="search-result-name">{{ r.name ?? r.id }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,107 @@
+/**
+ * EDDA READER — Design tokens (Norse-themed)
+ * Single source of truth: colors, spacing, typography, radii, shadows, breakpoints.
+ * No hardcoded values in components; reference via var(--token-name).
+ * Brand: Odin's cloak (primary), Mímir's well (accent), iron/slate surfaces.
+ */
+
+:root {
+  /* ─── Color ───────────────────────────────────────────────────────────── */
+  /* Primary / authority — deep blue, slate (Odin's cloak, night sky) */
+  --color-primary: #1e3a5f;
+  --color-primary-light: #2d4a6f;
+  --color-primary-dark: #0f2438;
+
+  /* Secondary / metal — iron grey, steel */
+  --color-surface-iron: #3d4551;
+  --color-surface-iron-light: #4a5563;
+  --color-border-iron: #5c6572;
+  --color-text-on-iron: #e8eaed;
+
+  /* Accent / wisdom — amber, gold, mead (Mímir's well) */
+  --color-accent-gold: #c9a227;
+  --color-accent-gold-light: #e4bc3d;
+  --color-accent-gold-dark: #9a7b1a;
+
+  /* Background — Yggdrasil bark, stone */
+  --color-bg-app: #1a1d23;
+  --color-bg-panel: #252a33;
+  --color-bg-panel-elevated: #2e343e;
+
+  /* Text */
+  --color-text-primary: #e8eaed;
+  --color-text-secondary: #b0b5bc;
+  --color-text-muted: #7a8190;
+
+  /* Links (accent) */
+  --color-link: var(--color-accent-gold);
+  --color-link-hover: var(--color-accent-gold-light);
+
+  /* Danger / warning — muted red, rust */
+  --color-danger: #a63d3d;
+  --color-warning: #b8860b;
+
+  /* Success */
+  --color-success: #2d6a4f;
+
+  /* ─── Spacing ────────────────────────────────────────────────────────── */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+
+  /* ─── Typography ──────────────────────────────────────────────────────── */
+  --font-heading: 'Cinzel', 'Georgia', serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+
+  --size-xs: 0.75rem;     /* 12px */
+  --size-sm: 0.875rem;    /* 14px */
+  --size-md: 1rem;        /* 16px */
+  --size-lg: 1.25rem;     /* 20px */
+  --size-xl: 1.5rem;      /* 24px */
+  --size-2xl: 2rem;       /* 32px */
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ─── Radius ──────────────────────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* ─── Shadow ──────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+
+  /* ─── Breakpoints (use in media queries) ───────────────────────────────── */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* ─── Graph (Cytoscape) ────────────────────────────────────────────────── */
+  --graph-node-system-fill: var(--color-primary);
+  --graph-node-system-border: var(--color-primary-light);
+  --graph-node-container-fill: var(--color-primary-light);
+  --graph-node-container-border: var(--color-border-iron);
+  --graph-node-component-fill: var(--color-surface-iron);
+  --graph-node-component-border: var(--color-border-iron);
+  --graph-node-external-fill: var(--color-surface-iron-light);
+  --graph-node-external-border: var(--color-accent-gold-dark);
+  --graph-edge-stroke: var(--color-border-iron);
+  --graph-edge-label-color: var(--color-text-secondary);
+  --graph-node-label-color: var(--color-text-primary);
+  --graph-node-width: 120px;
+  --graph-node-height: 60px;
+  --graph-edge-width: 2px;
+}

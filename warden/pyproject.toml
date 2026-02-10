@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "edda-warden"
+version = "0.1.0"
+description = "EDDA WARDEN - drift detection and scheduled re-analysis"
+readme = "README.md"
+packages = [{ include = "warden", from = "." }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+neo4j = ">=5.15"
+apscheduler = ">=3.10"
+httpx = ">=0.27"
+gitpython = ">=3.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.0"
+pytest-asyncio = ">=0.23"

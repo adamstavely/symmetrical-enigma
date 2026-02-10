@@ -1,0 +1,88 @@
+<div class="detail-panel">
+  @if (system && !container) {
+    <section class="detail-section">
+      <h2 class="detail-title">{{ system.name ?? system.id }}</h2>
+      @if (system.description) {
+        <p class="detail-description">{{ system.description }}</p>
+      }
+      <dl class="detail-meta">
+        @if (system.group) {
+          <dt>Group</dt>
+          <dd>{{ system.group }}</dd>
+        }
+        @if (system.team) {
+          <dt>Team</dt>
+          <dd>{{ system.team }}</dd>
+        }
+        @if (system.repository_url) {
+          <dt>Repository</dt>
+          <dd><a [href]="system.repository_url" target="_blank" rel="noopener">{{ system.repository_url }}</a></dd>
+        }
+      </dl>
+    </section>
+    <section class="detail-section">
+      <h3 class="detail-heading">Containers</h3>
+      <ul class="detail-list">
+        @for (c of system.containers; track c.id) {
+          <li>
+            <button type="button" class="detail-list-item" (click)="onContainerClick(c.id)">
+              <span class="detail-list-name">{{ c.name ?? c.id }}</span>
+              @if (c.technology) {
+                <span class="detail-list-meta">{{ c.technology }}</span>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+  @if (container) {
+    <section class="detail-section">
+      <h2 class="detail-title">{{ container.name ?? container.id }}</h2>
+      @if (container.description) {
+        <p class="detail-description">{{ container.description }}</p>
+      }
+      <dl class="detail-meta">
+        @if (container.technology) {
+          <dt>Technology</dt>
+          <dd>{{ container.technology }}</dd>
+        }
+        @if (container.type) {
+          <dt>Type</dt>
+          <dd>{{ container.type }}</dd>
+        }
+      </dl>
+    </section>
+    <section class="detail-section">
+      <h3 class="detail-heading">Components</h3>
+      <ul class="detail-list">
+        @for (co of container.components; track co.id) {
+          <li class="detail-list-item static">
+            <span class="detail-list-name">{{ co.name ?? co.id }}</span>
+            @if (co.responsibility) {
+              <span class="detail-list-meta">{{ co.responsibility }}</span>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+    @if (container.dependencies && container.dependencies.length) {
+      <section class="detail-section">
+        <h3 class="detail-heading">Dependencies</h3>
+        <ul class="detail-list">
+          @for (d of container.dependencies; track d.target) {
+            <li class="detail-list-item static">
+              <span class="detail-list-name">{{ d.target }}</span>
+              @if (d.type) {
+                <span class="detail-list-meta">{{ d.type }}</span>
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+  @if (!system && !container) {
+    <p class="detail-empty">Select a system or container to view details.</p>
+  }
+</div>

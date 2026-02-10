@@ -1,0 +1,13 @@
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a routerLink="/" class="breadcrumb-link" (click)="goToEnterprise()">Enterprise</a>
+  @if (level() === 'system' || level() === 'container') {
+    <span class="breadcrumb-sep">/</span>
+    <button type="button" class="breadcrumb-link breadcrumb-btn" (click)="goToSystem()">
+      {{ system()?.name ?? systemId() ?? 'System' }}
+    </button>
+  }
+  @if (level() === 'container') {
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">{{ container()?.name ?? containerId() ?? 'Container' }}</span>
+  }
+</nav>

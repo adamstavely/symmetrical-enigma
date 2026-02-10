@@ -1,0 +1,68 @@
+.architecture-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.view-error {
+  padding: var(--spacing-md);
+  background-color: var(--color-danger);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.view-loading {
+  padding: var(--spacing-md);
+  color: var(--color-text-muted);
+}
+
+.view-content {
+  display: flex;
+  gap: var(--spacing-lg);
+  flex: 1;
+  min-height: 0;
+  flex-wrap: wrap;
+}
+
+.view-graph-section {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.view-toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.view-export-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--size-sm);
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.view-export-btn:hover {
+  background-color: var(--color-primary-light);
+}
+
+.view-detail-section {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .view-content {
+    flex-direction: column;
+  }
+  .view-detail-section {
+    order: -1;
+  }
+}

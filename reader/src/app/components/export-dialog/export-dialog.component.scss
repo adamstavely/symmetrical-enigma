@@ -1,0 +1,70 @@
+.export-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.export-modal {
+  position: relative;
+  padding: var(--spacing-xl);
+  background-color: var(--color-bg-panel-elevated);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-iron);
+  box-shadow: var(--shadow-lg);
+  min-width: 320px;
+}
+
+.export-title {
+  font-family: var(--font-heading);
+  font-size: var(--size-lg);
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+.export-description {
+  font-size: var(--size-sm);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-lg);
+}
+
+.export-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.export-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--size-sm);
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.export-btn:hover {
+  background-color: var(--color-primary-light);
+}
+
+.export-close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--size-xl);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.export-close:hover {
+  color: var(--color-text-primary);
+}
