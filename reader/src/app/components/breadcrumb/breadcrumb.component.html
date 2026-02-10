@@ -1,5 +1,5 @@
 <nav class="breadcrumb" aria-label="Breadcrumb">
-  <a routerLink="/" class="breadcrumb-link" (click)="goToEnterprise()">Enterprise</a>
+  <button type="button" class="breadcrumb-link breadcrumb-btn" (click)="goToEnterprise()">Enterprise</button>
   @if (level() === 'system' || level() === 'container') {
     <span class="breadcrumb-sep">/</span>
     <button type="button" class="breadcrumb-link breadcrumb-btn" (click)="goToSystem()">

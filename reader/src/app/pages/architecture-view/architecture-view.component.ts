@@ -21,12 +21,14 @@ import {
   type ExportFormat,
 } from '../../components/export-dialog/export-dialog.component';
 import { VersionPickerComponent } from '../../components/version-picker/version-picker.component';
+import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-architecture-view',
   standalone: true,
   imports: [
     CommonModule,
+    BreadcrumbComponent,
     ArchitectureGraphComponent,
     SystemDetailComponent,
     ExportDialogComponent,

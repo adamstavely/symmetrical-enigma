@@ -1,0 +1,108 @@
+<div class="home">
+  <!-- Hero: single card, Heimdall-style -->
+  <section class="hero">
+    <div class="hero-card">
+      <div class="hero-card-bg" aria-hidden="true">
+        <div class="hero-card-gradient"></div>
+        <svg class="hero-card-svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="heroBgGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d4a84b" stop-opacity="0.06" />
+              <stop offset="50%" stop-color="#b8922e" stop-opacity="0.03" />
+              <stop offset="100%" stop-color="#d4a84b" stop-opacity="0.04" />
+            </linearGradient>
+            <pattern id="heroGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#d4a84b" stroke-width="0.25" opacity="0.15" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#heroBgGold)" />
+          <rect width="100%" height="100%" fill="url(#heroGrid)" />
+        </svg>
+      </div>
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">EDDA</h1>
+          <p class="hero-subtitle">Enterprise Documentation & Diagram Automation</p>
+          <p class="hero-description">
+            Generate and maintain C4 architecture diagrams from your code. Self-hosted and air-gapped—
+            analyze repositories, store architecture in a graph, and explore systems, containers, and
+            dependencies with drift detection and version history.
+          </p>
+          <div class="hero-actions">
+            <a routerLink="/architecture" class="btn-primary">View Architecture</a>
+            <a routerLink="/architecture" class="btn-secondary">Explore Diagram</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-graphic">
+            <svg viewBox="0 0 200 200" class="hero-svg" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="heroGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#b8922e" />
+                  <stop offset="100%" stop-color="#e4bc5c" />
+                </linearGradient>
+                <filter id="heroGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              <!-- Subtle dotted ring -->
+              <circle cx="100" cy="100" r="72" fill="none" stroke="url(#heroGold)" stroke-width="1" stroke-dasharray="4 6" opacity="0.5" />
+              <circle cx="100" cy="100" r="58" fill="none" stroke="url(#heroGold)" stroke-width="1" stroke-dasharray="3 5" opacity="0.35" />
+              <!-- Central diagram: system + containers -->
+              <line x1="100" y1="100" x2="55" y2="55" stroke="url(#heroGold)" stroke-width="2" opacity="0.8" />
+              <line x1="100" y1="100" x2="145" y2="55" stroke="url(#heroGold)" stroke-width="2" opacity="0.8" />
+              <rect x="70" y="85" width="60" height="38" rx="8" fill="var(--bg-elevated)" stroke="url(#heroGold)" stroke-width="2" filter="url(#heroGlow)" />
+              <rect x="25" y="30" width="60" height="34" rx="6" fill="var(--bg-surface)" stroke="url(#heroGold)" stroke-width="1.5" opacity="0.9" />
+              <rect x="115" y="30" width="60" height="34" rx="6" fill="var(--bg-surface)" stroke="url(#heroGold)" stroke-width="1.5" opacity="0.9" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Features: 3 cards -->
+  <section class="features">
+    <div class="features-inner">
+      <h2 class="features-title">Key Features</h2>
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Analyze Repositories</h3>
+          <p class="feature-card-desc">Point EDDA at a repo; it extracts structure and dependencies and stores them in a graph.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+              <path d="M6.5 10v4M10 6.5h4M17.5 10v4M14 17.5h-4" />
+            </svg>
+          </div>
+          <h3 class="feature-card-title">C4 Diagrams</h3>
+          <p class="feature-card-desc">Explore enterprise, system, and container levels in an interactive, navigable diagram.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Drift & History</h3>
+          <p class="feature-card-desc">Detect drift from source and browse versioned snapshots of your architecture.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>

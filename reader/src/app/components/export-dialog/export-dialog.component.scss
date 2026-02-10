@@ -1,33 +1,34 @@
 .export-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: var(--bg-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1050;
+  backdrop-filter: blur(4px);
 }
 
 .export-modal {
   position: relative;
   padding: var(--spacing-xl);
-  background-color: var(--color-bg-panel-elevated);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-iron);
   box-shadow: var(--shadow-lg);
   min-width: 320px;
 }
 
 .export-title {
-  font-family: var(--font-heading);
-  font-size: var(--size-lg);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
   margin: 0 0 var(--spacing-sm);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .export-description {
-  font-size: var(--size-sm);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
   margin: 0 0 var(--spacing-lg);
 }
 
@@ -38,18 +39,19 @@
 }
 
 .export-btn {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  font-size: var(--size-sm);
-  font-family: var(--font-body);
-  color: var(--color-text-primary);
-  background-color: var(--color-primary);
+  padding: 10px 20px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: #0d1117;
+  background: var(--accent);
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
+  transition: var(--transition-fast);
 }
 
 .export-btn:hover {
-  background-color: var(--color-primary-light);
+  background: var(--accent-hover);
 }
 
 .export-close {
@@ -58,13 +60,14 @@
   right: var(--spacing-md);
   background: none;
   border: none;
-  color: var(--color-text-muted);
-  font-size: var(--size-xl);
+  color: var(--text-muted);
+  font-size: var(--font-size-2xl);
   cursor: pointer;
   line-height: 1;
   padding: 0;
+  transition: var(--transition-fast);
 }
 
 .export-close:hover {
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }

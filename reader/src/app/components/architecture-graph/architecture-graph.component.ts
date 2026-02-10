@@ -29,6 +29,7 @@ export interface GraphEdge {
   imports: [CommonModule],
   templateUrl: './architecture-graph.component.html',
   styleUrl: './architecture-graph.component.scss',
+  host: { class: 'graph-host' },
 })
 export class ArchitectureGraphComponent implements AfterViewInit, OnDestroy {
   @ViewChild('cyContainer') cyContainer!: ElementRef<HTMLDivElement>;

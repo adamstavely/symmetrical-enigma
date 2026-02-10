@@ -1,8 +1,8 @@
 .detail-panel {
   padding: var(--spacing-lg);
-  background-color: var(--color-bg-panel);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-iron);
   min-width: 280px;
   max-width: 360px;
 }
@@ -16,23 +16,22 @@
 }
 
 .detail-title {
-  font-family: var(--font-heading);
-  font-size: var(--size-lg);
-  font-weight: var(--weight-semibold);
-  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
   margin: 0 0 var(--spacing-sm);
 }
 
 .detail-heading {
-  font-size: var(--size-md);
-  font-weight: var(--weight-medium);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
   margin: 0 0 var(--spacing-sm);
 }
 
 .detail-description {
-  font-size: var(--size-sm);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
   margin: 0 0 var(--spacing-md);
   line-height: var(--line-height-relaxed);
 }
@@ -41,22 +40,22 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: var(--spacing-xs) var(--spacing-md);
-  font-size: var(--size-sm);
+  font-size: var(--font-size-sm);
   margin: 0;
 }
 
 .detail-meta dt {
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   margin: 0;
 }
 
 .detail-meta dd {
   margin: 0;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .detail-meta a {
-  color: var(--color-link);
+  color: var(--accent);
   word-break: break-all;
 }
 
@@ -75,14 +74,15 @@
   background: none;
   border: none;
   border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   font: inherit;
   text-align: left;
   cursor: pointer;
+  transition: var(--transition-fast);
 }
 
 .detail-list-item:not(.static):hover {
-  background-color: var(--color-surface-iron);
+  background: var(--bg-elevated);
 }
 
 .detail-list-item.static {
@@ -90,16 +90,16 @@
 }
 
 .detail-list-name {
-  font-weight: var(--weight-medium);
+  font-weight: var(--font-weight-medium);
 }
 
 .detail-list-meta {
-  font-size: var(--size-xs);
-  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
 }
 
 .detail-empty {
   margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--size-sm);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
 }

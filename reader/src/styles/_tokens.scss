@@ -1,107 +1,140 @@
 /**
- * EDDA READER — Design tokens (Norse-themed)
- * Single source of truth: colors, spacing, typography, radii, shadows, breakpoints.
- * No hardcoded values in components; reference via var(--token-name).
- * Brand: Odin's cloak (primary), Mímir's well (accent), iron/slate surfaces.
+ * EDDA READER — Design tokens
+ * Minimal dark theme with gold accent. Flat surfaces, clear hierarchy.
  */
 
 :root {
-  /* ─── Color ───────────────────────────────────────────────────────────── */
-  /* Primary / authority — deep blue, slate (Odin's cloak, night sky) */
-  --color-primary: #1e3a5f;
-  --color-primary-light: #2d4a6f;
-  --color-primary-dark: #0f2438;
-
-  /* Secondary / metal — iron grey, steel */
-  --color-surface-iron: #3d4551;
-  --color-surface-iron-light: #4a5563;
-  --color-border-iron: #5c6572;
-  --color-text-on-iron: #e8eaed;
-
-  /* Accent / wisdom — amber, gold, mead (Mímir's well) */
-  --color-accent-gold: #c9a227;
-  --color-accent-gold-light: #e4bc3d;
-  --color-accent-gold-dark: #9a7b1a;
-
-  /* Background — Yggdrasil bark, stone */
-  --color-bg-app: #1a1d23;
-  --color-bg-panel: #252a33;
-  --color-bg-panel-elevated: #2e343e;
+  /* Backgrounds — flat dark */
+  --bg-page: #0d1117;
+  --bg-surface: #161b22;
+  --bg-elevated: #21262d;
+  --bg-overlay: rgba(1, 4, 9, 0.85);
 
   /* Text */
-  --color-text-primary: #e8eaed;
-  --color-text-secondary: #b0b5bc;
-  --color-text-muted: #7a8190;
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
 
-  /* Links (accent) */
-  --color-link: var(--color-accent-gold);
-  --color-link-hover: var(--color-accent-gold-light);
+  /* Accent — single gold */
+  --accent: #d4a84b;
+  --accent-hover: #e4bc5c;
 
-  /* Danger / warning — muted red, rust */
-  --color-danger: #a63d3d;
-  --color-warning: #b8860b;
+  /* Borders — subtle */
+  --border: #30363d;
+  --border-subtle: #21262d;
 
-  /* Success */
-  --color-success: #2d6a4f;
+  /* Aliases for existing usage */
+  --color-bg-primary: var(--bg-page);
+  --color-bg-app: var(--bg-page);
+  --color-bg-secondary: var(--bg-surface);
+  --color-bg-tertiary: var(--bg-elevated);
+  --color-bg-card: var(--bg-surface);
+  --color-bg-panel: var(--bg-surface);
+  --color-bg-panel-elevated: var(--bg-elevated);
+  --color-bg-overlay-dark: var(--bg-overlay);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-hover);
+  --color-accent-gold: var(--accent);
+  --color-accent-gold-light: var(--accent-hover);
+  --color-accent-gold-dark: #b8922e;
+  --color-link: var(--accent);
+  --color-link-hover: var(--accent-hover);
+  --color-border-iron: var(--border);
+  --color-surface-iron: var(--bg-elevated);
+  --color-surface-iron-light: #30363d;
+  --color-text-on-iron: var(--text-primary);
+  --border-color-primary: rgba(212, 168, 75, 0.35);
+  --border-color-primary-hover: rgba(212, 168, 75, 0.5);
+  --border-color-muted: rgba(212, 168, 75, 0.15);
+  --color-success: #3fb950;
+  --color-warning: #d29922;
+  --color-danger: #f85149;
+  --color-error: #f85149;
 
-  /* ─── Spacing ────────────────────────────────────────────────────────── */
-  --spacing-xs: 0.25rem;   /* 4px */
-  --spacing-sm: 0.5rem;    /* 8px */
-  --spacing-md: 1rem;      /* 16px */
-  --spacing-lg: 1.5rem;    /* 24px */
-  --spacing-xl: 2rem;      /* 32px */
-  --spacing-2xl: 3rem;     /* 48px */
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
 
-  /* ─── Typography ──────────────────────────────────────────────────────── */
-  --font-heading: 'Cinzel', 'Georgia', serif;
-  --font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
 
-  --size-xs: 0.75rem;     /* 12px */
-  --size-sm: 0.875rem;    /* 14px */
-  --size-md: 1rem;        /* 16px */
-  --size-lg: 1.25rem;     /* 20px */
-  --size-xl: 1.5rem;      /* 24px */
-  --size-2xl: 2rem;       /* 32px */
-
+  /* Typography */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: var(--font-family-base);
+  --font-heading: var(--font-family-base);
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --size-xs: var(--font-size-xs);
+  --size-sm: var(--font-size-sm);
+  --size-md: var(--font-size-base);
+  --size-lg: var(--font-size-lg);
+  --size-xl: var(--font-size-xl);
+  --size-2xl: var(--font-size-2xl);
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
   --weight-normal: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
-
-  --line-height-tight: 1.25;
+  --line-height-tight: 1.35;
   --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
+  --line-height-relaxed: 1.6;
 
-  /* ─── Radius ──────────────────────────────────────────────────────────── */
-  --radius-sm: 4px;
+  /* Radius — subtle */
+  --radius-sm: 6px;
   --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --border-radius-sm: 6px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 10px;
+  --border-radius-xl: 12px;
 
-  /* ─── Shadow ──────────────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  /* Shadows — minimal */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-primary: none;
 
-  /* ─── Breakpoints (use in media queries) ───────────────────────────────── */
+  /* Buttons: solid accent, no gradient */
+  --gradient-primary: var(--accent);
+  --gradient-primary-hover: var(--accent-hover);
+
+  /* Graph — high contrast for readability */
+  --graph-node-system-fill: #1a3a5a;
+  --graph-node-system-border: #3d6b9e;
+  --graph-node-container-fill: #243b4f;
+  --graph-node-container-border: #4a6b85;
+  --graph-node-component-fill: var(--bg-elevated);
+  --graph-node-component-border: var(--border);
+  --graph-node-external-fill: var(--bg-elevated);
+  --graph-node-external-border: var(--accent);
+  --graph-edge-stroke: #4a6b85;
+  --graph-edge-label-color: var(--text-secondary);
+  --graph-node-label-color: #f0f6fc;
+  --graph-node-width: 160px;
+  --graph-node-height: 72px;
+  --graph-edge-width: 2.5px;
+
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
-
-  /* ─── Graph (Cytoscape) ────────────────────────────────────────────────── */
-  --graph-node-system-fill: var(--color-primary);
-  --graph-node-system-border: var(--color-primary-light);
-  --graph-node-container-fill: var(--color-primary-light);
-  --graph-node-container-border: var(--color-border-iron);
-  --graph-node-component-fill: var(--color-surface-iron);
-  --graph-node-component-border: var(--color-border-iron);
-  --graph-node-external-fill: var(--color-surface-iron-light);
-  --graph-node-external-border: var(--color-accent-gold-dark);
-  --graph-edge-stroke: var(--color-border-iron);
-  --graph-edge-label-color: var(--color-text-secondary);
-  --graph-node-label-color: var(--color-text-primary);
-  --graph-node-width: 120px;
-  --graph-node-height: 60px;
-  --graph-edge-width: 2px;
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-all: all 0.15s ease;
 }

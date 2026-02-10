@@ -9,22 +9,51 @@
   align-items: center;
   gap: var(--spacing-lg);
   padding: var(--spacing-md) var(--spacing-xl);
-  background-color: var(--color-bg-panel);
-  border-bottom: 1px solid var(--color-border-iron);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-decoration: none;
+  color: inherit;
+}
+
+.app-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.app-nav-link {
+  margin-right: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.app-nav-link:hover {
+  color: var(--accent);
 }
 
 .app-title {
-  font-family: var(--font-heading);
-  font-size: var(--size-xl);
-  font-weight: var(--weight-bold);
-  color: var(--color-accent-gold);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--accent);
   margin: 0;
 }
 
 .app-tagline {
-  font-size: var(--size-sm);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -38,16 +67,17 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
   overflow: auto;
+  min-height: 0;
 }
 
 .app-footer {
   padding: var(--spacing-sm) var(--spacing-xl);
-  font-size: var(--size-xs);
-  color: var(--color-text-muted);
-  background-color: var(--color-bg-panel);
-  border-top: 1px solid var(--color-border-iron);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
 }
 
 .app-footer a {
