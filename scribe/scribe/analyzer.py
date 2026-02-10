@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from scribe.models import ArchitectureModel, Container, Relationship, ExternalDependency
+from scribe.models import ArchitectureModel, Container, Component, Relationship, ExternalDependency
 from scribe.extractors import extract_dependencies, extract_configs, extract_api_definitions
 from scribe.prompts import build_analysis_prompt
 
@@ -31,9 +31,15 @@ def _load_mock_model(repo_path: Path, mock_path: str | None) -> ArchitectureMode
             Container(id=f"{name}-api", name=f"{name} API", description="REST API", technology="Spring Boot", type="service", port=8080),
             Container(id=f"{name}-db", name=f"{name} DB", description="Database", technology="PostgreSQL", type="database"),
         ],
-        components=[],
+        components=[
+            Component(id=f"{name}-api-controller", name="API Controller", container_id=f"{name}-api", description="REST endpoints", responsibility="HTTP handling"),
+            Component(id=f"{name}-api-service", name="Business Service", container_id=f"{name}-api", description="Core logic", responsibility="Domain logic"),
+            Component(id=f"{name}-api-repo", name="Repository", container_id=f"{name}-api", description="Data access", responsibility="Persistence"),
+        ],
         relationships=[
             Relationship(from_id=f"{name}-api", to_id=f"{name}-db", type="writes_to", description="Persists data"),
+            Relationship(from_id=f"{name}-api-controller", to_id=f"{name}-api-service", type="calls_api", description="Delegates to service"),
+            Relationship(from_id=f"{name}-api-service", to_id=f"{name}-api-repo", type="calls_api", description="Uses repository"),
         ],
         external_dependencies=[],
     )

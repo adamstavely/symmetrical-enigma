@@ -59,6 +59,19 @@
 
 .app-nav {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+.app-nav .app-nav-link,
+.app-nav app-group-filter,
+.app-nav app-technology-filter {
+  flex-shrink: 0;
+}
+
+.app-nav app-search-bar {
   min-width: 200px;
   max-width: 400px;
 }

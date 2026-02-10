@@ -161,6 +161,13 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
+.feature-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 .feature-card:hover {
   border-color: rgba(212, 168, 75, 0.35);
   box-shadow: var(--shadow-md);
@@ -193,4 +200,14 @@
   color: var(--text-secondary);
   line-height: var(--line-height-relaxed);
   margin: 0;
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
 }

@@ -69,6 +69,12 @@ export interface ContainerDependency {
   description?: string;
 }
 
+export interface ComponentRelationshipRef {
+  from: string;
+  to: string;
+  type?: string;
+}
+
 export interface ContainerDetail {
   id: string;
   name?: string;
@@ -77,6 +83,7 @@ export interface ContainerDetail {
   type?: string;
   port?: number;
   components: ComponentNode[];
+  component_relationships?: ComponentRelationshipRef[];
   dependencies: ContainerDependency[];
 }
 
@@ -105,4 +112,42 @@ export interface ArchitectureVersion {
   id: string;
   analyzed_at?: string;
   commit_sha?: string | null;
+}
+
+/** Version diff: what changed between two architecture versions */
+export interface VersionDiff {
+  system_id: string;
+  from_version_id: string;
+  to_version_id: string;
+  containers_added: ContainerNode[];
+  containers_removed: ContainerNode[];
+  containers_changed: Array<{ id: string; from: ContainerNode; to: ContainerNode }>;
+  relationships_added: RelationshipRef[];
+  relationships_removed: RelationshipRef[];
+}
+
+export interface DriftAlert {
+  system_id: string;
+  system_name: string;
+  repository_url: string | null;
+  last_analyzed: string | null;
+  last_commit: string | null;
+  drift_hours: number;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface DriftAlertsResponse {
+  alerts: DriftAlert[];
+}
+
+export interface AnalyzeRequest {
+  repository_url: string;
+}
+
+export interface AnalyzeResponse {
+  status: string;
+  system_id: string;
+  system_name: string;
+  containers: number;
+  relationships: number;
 }

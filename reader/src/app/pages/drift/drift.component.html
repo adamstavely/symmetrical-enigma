@@ -1,0 +1,82 @@
+<div class="drift-page">
+  <header class="drift-header">
+    <h1 class="drift-title">Drift</h1>
+    <p class="drift-subtitle">Systems where the repository has commits newer than the last analysis.</p>
+    <div class="drift-actions">
+      <select
+        class="drift-filter"
+        [value]="minSeverity()"
+        (change)="minSeverity.set($any($event.target).value); loadDrift()"
+      >
+        <option value="">All severities</option>
+        <option value="low">Low+</option>
+        <option value="medium">Medium+</option>
+        <option value="high">High+</option>
+        <option value="critical">Critical only</option>
+      </select>
+      <button type="button" class="btn-primary" (click)="openAnalyzeDialog()">Analyze repository</button>
+      <button type="button" class="btn-secondary" (click)="loadDrift()" [disabled]="loading()">Refresh</button>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="drift-error" role="alert">
+      {{ error() }}
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="drift-loading">Loading drift alerts…</p>
+  } @else if (alerts().length === 0) {
+    <div class="drift-empty">
+      <p>No drift alerts. Either no systems have a <code>repository_url</code>, or Git last-commit could not be fetched (set <code>GIT_TOKEN</code> for GitLab API).</p>
+      <a routerLink="/architecture" class="btn-secondary">View architecture</a>
+    </div>
+  } @else {
+    <div class="drift-table-wrap">
+      <table class="drift-table">
+        <thead>
+          <tr>
+            <th>System</th>
+            <th>Last analyzed</th>
+            <th>Last commit</th>
+            <th>Drift</th>
+            <th>Severity</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (alert of alerts(); track alert.system_id) {
+            <tr>
+              <td>
+                <a [routerLink]="['/architecture']" [queryParams]="{ system: alert.system_id }" class="drift-system-link">
+                  {{ alert.system_name || alert.system_id }}
+                </a>
+              </td>
+              <td>{{ formatDate(alert.last_analyzed) }}</td>
+              <td>{{ formatDate(alert.last_commit) }}</td>
+              <td>{{ formatHours(alert.drift_hours) }}</td>
+              <td>
+                <span class="severity-badge" [ngClass]="severityClass(alert.severity)">{{ alert.severity }}</span>
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="btn-reanalyze"
+                  (click)="reAnalyze(alert)"
+                  [disabled]="reAnalyzing() === alert.system_id || !alert.repository_url"
+                >
+                  {{ reAnalyzing() === alert.system_id ? 'Analyzing…' : 'Re-analyze' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (analyzeDialogOpen()) {
+    <app-analyze-dialog (done)="onAnalyzeDone()" (cancel)="analyzeDialogOpen.set(false)" />
+  }
+</div>

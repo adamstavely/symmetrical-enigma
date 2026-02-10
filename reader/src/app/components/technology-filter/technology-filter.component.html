@@ -1,0 +1,31 @@
+<div class="nav-dropdown" [class.nav-dropdown-open]="open()">
+  <button
+    type="button"
+    class="nav-dropdown-trigger"
+    (click)="toggle()"
+    [attr.aria-expanded]="open()"
+    aria-haspopup="listbox"
+    aria-label="Filter by technology"
+  >
+    <span class="nav-dropdown-label">{{ displayLabel() }}</span>
+    <svg class="nav-dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+  @if (open()) {
+    <ul class="nav-dropdown-panel" role="listbox">
+      <li role="option">
+        <button type="button" class="nav-dropdown-option" [class.nav-dropdown-option-active]="!value()" (click)="select('')">
+          All technologies
+        </button>
+      </li>
+      @for (t of options(); track t) {
+        <li role="option">
+          <button type="button" class="nav-dropdown-option" [class.nav-dropdown-option-active]="value() === t" (click)="select(t)">
+            {{ t }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

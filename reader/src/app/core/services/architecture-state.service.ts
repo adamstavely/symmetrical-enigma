@@ -57,14 +57,14 @@ export class ArchitectureStateService {
 
   constructor(private api: ArchitectureApiService) {}
 
-  loadEnterpriseView(): Observable<EnterpriseView | null> {
+  loadEnterpriseView(technology?: string): Observable<EnterpriseView | null> {
     this.loading.set(true);
     this.error.set(null);
     this.currentSystemId.set(null);
     this.currentContainerId.set(null);
     this.systemDetail.set(null);
     this.containerDetail.set(null);
-    return this.api.getEnterpriseView().pipe(
+    return this.api.getEnterpriseView(technology).pipe(
       tap((data) => {
         this.enterpriseView.set(data);
         this.loading.set(false);

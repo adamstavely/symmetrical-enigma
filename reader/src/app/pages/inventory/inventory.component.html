@@ -1,0 +1,29 @@
+<div class="inventory-page">
+  <header class="inventory-header">
+    <h1 class="inventory-title">Technology inventory</h1>
+    <p class="inventory-subtitle">Container technologies and the systems that use them.</p>
+  </header>
+
+  @if (error()) {
+    <p class="inventory-error">{{ error() }}</p>
+  }
+  @if (loading()) {
+    <p class="inventory-loading">Loading…</p>
+  }
+  @if (!loading() && !error() && inventory().length === 0) {
+    <p class="inventory-empty">No technologies recorded yet. Analyze a repository to populate the inventory.</p>
+  }
+  @if (!loading() && !error() && inventory().length > 0) {
+    <ul class="inventory-list">
+      @for (item of inventory(); track item.technology) {
+        <li class="inventory-item">
+          <span class="inventory-tech">{{ item.technology }}</span>
+          <span class="inventory-count">{{ item.system_ids.length }} system{{ item.system_ids.length === 1 ? '' : 's' }}</span>
+          <a [routerLink]="['/architecture']" [queryParams]="{ technology: item.technology }" class="inventory-link">
+            View in architecture
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</div>

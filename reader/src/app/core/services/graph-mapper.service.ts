@@ -88,13 +88,25 @@ export class GraphMapperService {
         },
       });
     });
-    const edges = (detail.dependencies || []).map((d, i) => ({
-      data: {
-        id: `ed${i}-${detail.id}-${d.target}`,
-        source: detail.id,
-        target: d.target,
-      },
-    }));
+    const edges: { data: { id: string; source: string; target: string } }[] = [];
+    (detail.dependencies || []).forEach((d, i) => {
+      edges.push({
+        data: {
+          id: `ed${i}-${detail.id}-${d.target}`,
+          source: detail.id,
+          target: d.target,
+        },
+      });
+    });
+    (detail.component_relationships || []).forEach((r, i) => {
+      edges.push({
+        data: {
+          id: `ec${i}-${r.from}-${r.to}`,
+          source: r.from,
+          target: r.to,
+        },
+      });
+    });
     return { nodes, edges };
   }
 }

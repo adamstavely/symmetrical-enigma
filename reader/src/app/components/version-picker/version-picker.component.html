@@ -14,5 +14,16 @@
     @if (selectedVersionId) {
       <button type="button" class="version-picker__clear" (click)="onClear()">Show latest</button>
     }
+    <label class="version-picker__label">Compare with</label>
+    <select
+      class="version-picker__select"
+      [value]="compareWithVersionId ?? ''"
+      (change)="onCompareChange($event)"
+    >
+      <option value="">—</option>
+      @for (v of versions; track v.id) {
+        <option [value]="v.id">{{ formatDate(v.analyzed_at) }}{{ v.commit_sha ? ' (' + (v.commit_sha.slice(0, 7)) + ')' : '' }}</option>
+      }
+    </select>
   </div>
 }

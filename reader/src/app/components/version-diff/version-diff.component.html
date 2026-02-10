@@ -1,0 +1,70 @@
+@if (diff) {
+  <div class="version-diff">
+    <h3 class="version-diff__title">Version comparison</h3>
+    @if (fromLabel || toLabel) {
+      <p class="version-diff__range">{{ fromLabel }} → {{ toLabel }}</p>
+    }
+    <div class="version-diff__sections">
+      @if (diff.containers_added.length > 0) {
+        <section class="version-diff__section version-diff__section--added">
+          <h4 class="version-diff__heading">Containers added</h4>
+          <ul class="version-diff__list">
+            @for (c of diff.containers_added; track c.id) {
+              <li><span class="version-diff__name">{{ c.name ?? c.id }}</span> @if (c.technology) { <span class="version-diff__meta">{{ c.technology }}</span> }</li>
+            }
+          </ul>
+        </section>
+      }
+      @if (diff.containers_removed.length > 0) {
+        <section class="version-diff__section version-diff__section--removed">
+          <h4 class="version-diff__heading">Containers removed</h4>
+          <ul class="version-diff__list">
+            @for (c of diff.containers_removed; track c.id) {
+              <li><span class="version-diff__name">{{ c.name ?? c.id }}</span> @if (c.technology) { <span class="version-diff__meta">{{ c.technology }}</span> }</li>
+            }
+          </ul>
+        </section>
+      }
+      @if (diff.containers_changed.length > 0) {
+        <section class="version-diff__section version-diff__section--changed">
+          <h4 class="version-diff__heading">Containers changed</h4>
+          <ul class="version-diff__list version-diff__list--changed">
+            @for (ch of diff.containers_changed; track ch.id) {
+              <li>
+                <span class="version-diff__name">{{ ch.from.name ?? ch.id }}</span>
+                <span class="version-diff__arrow">→</span>
+                <span class="version-diff__name">{{ ch.to.name ?? ch.id }}</span>
+                @if (ch.from.technology !== ch.to.technology) {
+                  <span class="version-diff__meta">({{ ch.from.technology ?? '—' }} → {{ ch.to.technology ?? '—' }})</span>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
+      @if (diff.relationships_added.length > 0) {
+        <section class="version-diff__section version-diff__section--added">
+          <h4 class="version-diff__heading">Relationships added</h4>
+          <ul class="version-diff__list">
+            @for (r of diff.relationships_added; track r.from + '-' + r.to) {
+              <li><span class="version-diff__edge">{{ r.from }} → {{ r.to }}</span> @if (r.type) { <span class="version-diff__meta">{{ r.type }}</span> }</li>
+            }
+          </ul>
+        </section>
+      }
+      @if (diff.relationships_removed.length > 0) {
+        <section class="version-diff__section version-diff__section--removed">
+          <h4 class="version-diff__heading">Relationships removed</h4>
+          <ul class="version-diff__list">
+            @for (r of diff.relationships_removed; track r.from + '-' + r.to) {
+              <li><span class="version-diff__edge">{{ r.from }} → {{ r.to }}</span> @if (r.type) { <span class="version-diff__meta">{{ r.type }}</span> }</li>
+            }
+          </ul>
+        </section>
+      }
+    </div>
+    @if (diff.containers_added.length === 0 && diff.containers_removed.length === 0 && diff.containers_changed.length === 0 && diff.relationships_added.length === 0 && diff.relationships_removed.length === 0) {
+      <p class="version-diff__empty">No changes between these versions.</p>
+    }
+  </div>
+}

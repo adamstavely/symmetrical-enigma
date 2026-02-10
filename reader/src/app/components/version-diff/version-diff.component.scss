@@ -1,0 +1,87 @@
+.version-diff {
+  padding: var(--spacing-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.version-diff__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--text-primary);
+}
+
+.version-diff__range {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.version-diff__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.version-diff__section--added .version-diff__heading {
+  color: var(--color-added, #276749);
+}
+
+.version-diff__section--removed .version-diff__heading {
+  color: var(--color-removed, #c53030);
+}
+
+.version-diff__section--changed .version-diff__heading {
+  color: var(--accent);
+}
+
+.version-diff__heading {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.version-diff__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--font-size-sm);
+}
+
+.version-diff__list li {
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.version-diff__list li:last-child {
+  border-bottom: none;
+}
+
+.version-diff__list--changed li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.version-diff__name,
+.version-diff__edge {
+  font-weight: var(--font-weight-medium);
+}
+
+.version-diff__arrow {
+  color: var(--text-muted);
+}
+
+.version-diff__meta {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  margin-left: var(--spacing-xs);
+}
+
+.version-diff__empty {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}

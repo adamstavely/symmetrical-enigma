@@ -1,0 +1,27 @@
+<div class="analyze-backdrop" (click)="close()" role="button" tabindex="0" (keydown.escape)="close()">
+  <div class="analyze-modal" (click)="$event.stopPropagation()" role="dialog" aria-labelledby="analyze-title">
+    <h2 id="analyze-title" class="analyze-title">Analyze repository</h2>
+    <p class="analyze-description">Enter a Git repository URL. EDDA will clone it, run SCRIBE analysis, and store the architecture.</p>
+    <div class="analyze-form">
+      <label for="analyze-url">Repository URL</label>
+      <input
+        id="analyze-url"
+        type="url"
+        class="analyze-input"
+        placeholder="https://gitlab.com/org/repo or git@gitlab.com:org/repo.git"
+        [value]="repositoryUrl()"
+        (input)="repositoryUrl.set($any($event.target).value); error.set(null)"
+      />
+      @if (error()) {
+        <p class="analyze-error" role="alert">{{ error() }}</p>
+      }
+    </div>
+    <div class="analyze-actions">
+      <button type="button" class="btn-secondary" (click)="close()">Cancel</button>
+      <button type="button" class="btn-primary" (click)="submit()" [disabled]="submitting()">
+        {{ submitting() ? 'Analyzing…' : 'Analyze' }}
+      </button>
+    </div>
+    <button type="button" class="analyze-close" (click)="close()" aria-label="Close">×</button>
+  </div>
+</div>

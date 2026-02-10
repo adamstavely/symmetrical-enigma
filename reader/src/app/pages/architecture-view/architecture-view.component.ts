@@ -8,6 +8,7 @@ import {
   effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { ArchitectureStateService } from '../../core/services/architecture-state.service';
 import { GraphMapperService } from '../../core/services/graph-mapper.service';
 import {
@@ -21,7 +22,11 @@ import {
   type ExportFormat,
 } from '../../components/export-dialog/export-dialog.component';
 import { VersionPickerComponent } from '../../components/version-picker/version-picker.component';
+import { VersionDiffComponent } from '../../components/version-diff/version-diff.component';
 import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
+import { ArchitectureApiService } from '../../core/services/architecture-api.service';
+import { take } from 'rxjs/operators';
+import type { VersionDiff } from '../../models/architecture';
 
 @Component({
   selector: 'app-architecture-view',
@@ -33,6 +38,7 @@ import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.comp
     SystemDetailComponent,
     ExportDialogComponent,
     VersionPickerComponent,
+    VersionDiffComponent,
   ],
   templateUrl: './architecture-view.component.html',
   styleUrl: './architecture-view.component.scss',
@@ -42,10 +48,14 @@ export class ArchitectureViewComponent implements AfterViewInit {
 
   private readonly state = inject(ArchitectureStateService);
   private readonly graphMapper = inject(GraphMapperService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly api = inject(ArchitectureApiService);
 
   readonly loading = this.state.isLoading;
   readonly error = this.state.errorMessage;
   readonly exportDialogOpen = signal(false);
+  readonly compareWithVersionId = signal<string | null>(null);
+  readonly versionDiff = signal<VersionDiff | null>(null);
 
   readonly graphNodes = computed<GraphNode[]>(() => {
     const ent = this.state.enterprise();
@@ -88,10 +98,33 @@ export class ArchitectureViewComponent implements AfterViewInit {
       this.state.system();
       this.state.container();
     });
+    effect(() => {
+      const sid = this.state.systemId();
+      const toId = this.state.versionId();
+      const fromId = this.compareWithVersionId();
+      if (sid && fromId && toId && fromId !== toId) {
+        this.api
+          .getVersionDiff(sid, fromId, toId)
+          .pipe(take(1))
+          .subscribe({
+            next: (d) => this.versionDiff.set(d ?? null),
+            error: () => this.versionDiff.set(null),
+          });
+      } else {
+        this.versionDiff.set(null);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
-    this.state.loadEnterpriseView().subscribe();
+    const technology = this.route.snapshot.queryParamMap.get('technology') ?? undefined;
+    this.state.loadEnterpriseView(technology).subscribe(() => {
+      const systemId = this.route.snapshot.queryParamMap.get('system');
+      if (systemId) {
+        this.state.loadSystemDetail(systemId).subscribe();
+        this.state.loadSystemVersions(systemId);
+      }
+    });
   }
 
   onNodeSelect(event: { id: string; level?: string }): void {
@@ -113,6 +146,22 @@ export class ArchitectureViewComponent implements AfterViewInit {
   onVersionClear(): void {
     const sid = this.state.systemId();
     if (sid) this.state.loadSystemDetail(sid).subscribe();
+    this.compareWithVersionId.set(null);
+  }
+
+  onCompareSelect(versionId: string | null): void {
+    this.compareWithVersionId.set(versionId);
+  }
+
+  versionLabel(versionId: string): string {
+    const v = this.state.versions().find((x) => x.id === versionId);
+    if (!v) return versionId;
+    try {
+      const d = v.analyzed_at ? new Date(v.analyzed_at).toLocaleString() : '';
+      return v.commit_sha ? `${d} (${v.commit_sha.slice(0, 7)})` : d;
+    } catch {
+      return versionId;
+    }
   }
 
   onContainerSelect(containerId: string): void {

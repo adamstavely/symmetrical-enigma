@@ -8,17 +8,6 @@
     aria-label="Search architecture"
     autocomplete="off"
   />
-  <select
-    class="search-filter"
-    [value]="groupFilter()"
-    (change)="onGroupChange($any($event.target).value)"
-    aria-label="Filter by group"
-  >
-    <option value="">All groups</option>
-    @for (g of groups(); track g) {
-      <option [value]="g">{{ g }}</option>
-    }
-  </select>
   @if (loading()) {
     <span class="search-loading" aria-hidden="true">…</span>
   }

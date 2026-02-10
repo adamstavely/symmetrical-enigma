@@ -84,17 +84,26 @@ class ArchitectureRepository:
         external_dependencies = model.get("external_dependencies", [])
 
         async with self.driver.session() as session:
-            # System: MERGE and SET (manual_override respected via separate PATCH API)
+            # System: MERGE; only SET on MATCH when manual_override is not true (preserve user edits)
+            sys_params = {k: v for k, v in system.items() if k in ("id", "name", "description", "team", "group", "repository_url")}
             await session.run(
                 """
                 MERGE (s:System {id: $id})
                 ON CREATE SET s.name = $name, s.description = $description, s.team = $team, s.group = $group,
                     s.repository_url = $repository_url, s.last_analyzed = datetime(), s.updated_at = datetime(),
                     s.manual_override = false
-                ON MATCH SET s.name = $name, s.description = $description, s.team = $team, s.group = $group,
-                    s.repository_url = $repository_url, s.last_analyzed = datetime(), s.updated_at = datetime()
+                ON MATCH SET s.last_analyzed = datetime(), s.updated_at = datetime()
                 """,
-                **{k: v for k, v in system.items() if k in ("id", "name", "description", "team", "group", "repository_url")},
+                **sys_params,
+            )
+            await session.run(
+                """
+                MATCH (s:System {id: $id})
+                WHERE (s.manual_override IS NULL OR s.manual_override = false)
+                SET s.name = $name, s.description = $description, s.team = $team, s.group = $group,
+                    s.repository_url = $repository_url
+                """,
+                **sys_params,
             )
 
             for c in containers:
@@ -105,8 +114,7 @@ class ArchitectureRepository:
                     ON CREATE SET c.name = $name, c.description = $description, c.technology = $technology,
                         c.type = $type, c.port = $port, c.repository_path = $repository_path,
                         c.updated_at = datetime(), c.manual_override = false
-                    ON MATCH SET c.name = $name, c.description = $description, c.technology = $technology,
-                        c.type = $type, c.port = $port, c.repository_path = $repository_path, c.updated_at = datetime()
+                    ON MATCH SET c.updated_at = datetime()
                     WITH s, c
                     MERGE (s)-[:CONTAINS]->(c)
                     """,
@@ -119,6 +127,60 @@ class ArchitectureRepository:
                     port=c.get("port"),
                     repository_path=c.get("repository_path"),
                 )
+                await session.run(
+                    """
+                    MATCH (c:Container {id: $id})
+                    WHERE (c.manual_override IS NULL OR c.manual_override = false)
+                    SET c.name = $name, c.description = $description, c.technology = $technology,
+                        c.type = $type, c.port = $port, c.repository_path = $repository_path
+                    """,
+                    id=c["id"],
+                    name=c.get("name", ""),
+                    description=c.get("description", ""),
+                    technology=c.get("technology", ""),
+                    type=c.get("type", "service"),
+                    port=c.get("port"),
+                    repository_path=c.get("repository_path"),
+                )
+
+            for co in components:
+                container_id = co.get("container_id")
+                if not container_id:
+                    continue
+                await session.run(
+                    """
+                    MATCH (s:System {id: $system_id})-[:CONTAINS]->(c:Container {id: $container_id})
+                    MERGE (co:Component {id: $id})
+                    ON CREATE SET co.name = $name, co.description = $description, co.responsibility = $responsibility,
+                        co.file_path = $file_path, co.language = $language, co.updated_at = datetime(),
+                        co.manual_override = false
+                    ON MATCH SET co.updated_at = datetime()
+                    WITH c, co
+                    MERGE (c)-[:CONTAINS]->(co)
+                    """,
+                    system_id=system["id"],
+                    container_id=container_id,
+                    id=co["id"],
+                    name=co.get("name", ""),
+                    description=co.get("description", ""),
+                    responsibility=co.get("responsibility", ""),
+                    file_path=co.get("file_path", ""),
+                    language=co.get("language", ""),
+                )
+                await session.run(
+                    """
+                    MATCH (co:Component {id: $id})
+                    WHERE (co.manual_override IS NULL OR co.manual_override = false)
+                    SET co.name = $name, co.description = $description, co.responsibility = $responsibility,
+                        co.file_path = $file_path, co.language = $language
+                    """,
+                    id=co["id"],
+                    name=co.get("name", ""),
+                    description=co.get("description", ""),
+                    responsibility=co.get("responsibility", ""),
+                    file_path=co.get("file_path", ""),
+                    language=co.get("language", ""),
+                )
 
             for rel in relationships:
                 await session.run(
@@ -127,7 +189,19 @@ class ArchitectureRepository:
                     MATCH (to {id: $to_id})
                     MERGE (from)-[r:DEPENDS_ON]->(to)
                     ON CREATE SET r.type = $type, r.protocol = $protocol, r.description = $description, r.manual_override = false
-                    ON MATCH SET r.type = $type, r.protocol = $protocol, r.description = $description
+                    ON MATCH SET r.manual_override = COALESCE(r.manual_override, false)
+                    """,
+                    from_id=rel["from_id"],
+                    to_id=rel["to_id"],
+                    type=rel.get("type", "calls_api"),
+                    protocol=rel.get("protocol"),
+                    description=rel.get("description", ""),
+                )
+                await session.run(
+                    """
+                    MATCH (a {id: $from_id})-[r:DEPENDS_ON]->(b {id: $to_id})
+                    WHERE (r.manual_override IS NULL OR r.manual_override = false)
+                    SET r.type = $type, r.protocol = $protocol, r.description = $description
                     """,
                     from_id=rel["from_id"],
                     to_id=rel["to_id"],
@@ -182,30 +256,45 @@ class ArchitectureRepository:
             )
             return version_id
 
-    async def get_enterprise_view(self) -> dict[str, Any]:
-        """All systems and inter-system / external relationships for the top-level view."""
+    async def get_enterprise_view(self, technology: str | None = None) -> dict[str, Any]:
+        """All systems and inter-system / external relationships. Optional technology filter (systems with a container using that tech)."""
         async with self.driver.session() as session:
-            systems_result = await session.run("MATCH (s:System) RETURN s ORDER BY s.name")
+            if technology:
+                systems_result = await session.run(
+                    """
+                    MATCH (s:System)-[:CONTAINS]->(c:Container)
+                    WHERE c.technology = $technology
+                    WITH DISTINCT s RETURN s ORDER BY s.name
+                    """,
+                    technology=technology,
+                )
+            else:
+                systems_result = await session.run("MATCH (s:System) RETURN s ORDER BY s.name")
             systems = [dict(record["s"]) for record in await systems_result.data()]
+            system_ids = {s["id"] for s in systems}
 
             # Inter-system: container in s1 depends on container in s2 => edge s1 -> s2
-            edges_result = await session.run(
-                """
-                MATCH (s1:System)-[:CONTAINS]->(c1:Container)-[:DEPENDS_ON]->(c2:Container)<-[:CONTAINS]-(s2:System)
-                WHERE s1.id <> s2.id
-                RETURN DISTINCT s1.id AS source, s2.id AS target, 'depends_on' AS type
-                """
-            )
-            edges = [dict(r) for r in await edges_result.data()]
-
-            # System -> external
-            ext_result = await session.run(
-                """
-                MATCH (s:System)-[:INTEGRATES_WITH]->(e:ExternalSystem)
-                RETURN s.id AS source, e.id AS target, 'integrates_with' AS type
-                """
-            )
-            edges.extend([dict(r) for r in await ext_result.data()])
+            if system_ids:
+                edges_result = await session.run(
+                    """
+                    MATCH (s1:System)-[:CONTAINS]->(c1:Container)-[:DEPENDS_ON]->(c2:Container)<-[:CONTAINS]-(s2:System)
+                    WHERE s1.id <> s2.id AND s1.id IN $ids AND s2.id IN $ids
+                    RETURN DISTINCT s1.id AS source, s2.id AS target, 'depends_on' AS type
+                    """,
+                    ids=list(system_ids),
+                )
+                edges = [dict(r) for r in await edges_result.data()]
+                ext_result = await session.run(
+                    """
+                    MATCH (s:System)-[:INTEGRATES_WITH]->(e:ExternalSystem)
+                    WHERE s.id IN $ids
+                    RETURN s.id AS source, e.id AS target, 'integrates_with' AS type
+                    """,
+                    ids=list(system_ids),
+                )
+                edges.extend([dict(r) for r in await ext_result.data()])
+            else:
+                edges = []
 
             return {"systems": _to_json_safe(systems), "edges": edges}
 
@@ -224,6 +313,47 @@ class ArchitectureRepository:
             )
             rows = await result.data()
             return _to_json_safe([{"id": r["id"], "analyzed_at": r["analyzed_at"], "commit_sha": r["commit_sha"] or None} for r in rows])
+
+    async def get_version_diff(
+        self,
+        system_id: str,
+        from_version_id: str,
+        to_version_id: str,
+    ) -> dict[str, Any] | None:
+        """Compare two architecture versions; returns added/removed/changed containers and relationships."""
+        from_detail = await self.get_system_detail(system_id, from_version_id)
+        to_detail = await self.get_system_detail(system_id, to_version_id)
+        if not from_detail or not to_detail:
+            return None
+        from_containers = {c["id"]: c for c in (from_detail.get("containers") or [])}
+        to_containers = {c["id"]: c for c in (to_detail.get("containers") or [])}
+        from_rels = {(_r.get("from"), _r.get("to")): _r for _r in (from_detail.get("relationships") or [])}
+        to_rels = {(_r.get("from"), _r.get("to")): _r for _r in (to_detail.get("relationships") or [])}
+
+        containers_added = [to_containers[cid] for cid in to_containers if cid not in from_containers]
+        containers_removed = [from_containers[cid] for cid in from_containers if cid not in to_containers]
+        containers_changed = []
+        for cid in from_containers:
+            if cid in to_containers and from_containers[cid] != to_containers[cid]:
+                containers_changed.append({
+                    "id": cid,
+                    "from": from_containers[cid],
+                    "to": to_containers[cid],
+                })
+
+        relationships_added = [to_rels[k] for k in to_rels if k not in from_rels]
+        relationships_removed = [from_rels[k] for k in from_rels if k not in to_rels]
+
+        return _to_json_safe({
+            "system_id": system_id,
+            "from_version_id": from_version_id,
+            "to_version_id": to_version_id,
+            "containers_added": containers_added,
+            "containers_removed": containers_removed,
+            "containers_changed": containers_changed,
+            "relationships_added": relationships_added,
+            "relationships_removed": relationships_removed,
+        })
 
     async def get_system_detail(self, system_id: str, version_id: str | None = None) -> dict[str, Any] | None:
         """System with its containers and relationships. If version_id given, return snapshot from that version."""
@@ -270,7 +400,7 @@ class ArchitectureRepository:
             })
 
     async def get_container_detail(self, system_id: str, container_id: str) -> dict[str, Any] | None:
-        """Container with its components and dependencies."""
+        """Container with its components, component-component relationships, and container dependencies."""
         async with self.driver.session() as session:
             result = await session.run(
                 """
@@ -289,6 +419,22 @@ class ArchitectureRepository:
                 return None
             c = record["c"]
             deps = [d for d in (record["deps"] or []) if d and d.get("target")]
+            comp_list = [dict(co) for co in (record["components"] or []) if co]
+
+            comp_rels_result = await session.run(
+                """
+                MATCH (s:System {id: $system_id})-[:CONTAINS]->(c:Container {id: $container_id})
+                MATCH (c)-[:CONTAINS]->(co1:Component)-[r:DEPENDS_ON]->(co2:Component)<-[:CONTAINS]-(c)
+                RETURN co1.id AS from_id, co2.id AS to_id, r.type AS type
+                """,
+                system_id=system_id,
+                container_id=container_id,
+            )
+            comp_rels = [
+                {"from": r["from_id"], "to": r["to_id"], "type": r["type"]}
+                for r in await comp_rels_result.data()
+            ]
+
             return _to_json_safe({
                 "id": c["id"],
                 "name": c.get("name"),
@@ -296,19 +442,44 @@ class ArchitectureRepository:
                 "technology": c.get("technology"),
                 "type": c.get("type"),
                 "port": c.get("port"),
-                "components": [dict(co) for co in (record["components"] or []) if co],
+                "components": comp_list,
+                "component_relationships": comp_rels,
                 "dependencies": deps,
             })
 
     async def get_all_systems(
         self,
         group: str | None = None,
+        technology: str | None = None,
         skip: int = 0,
         limit: int = 50,
     ) -> list[dict[str, Any]]:
-        """List systems with optional group filter and pagination."""
+        """List systems with optional group and technology filter and pagination."""
         async with self.driver.session() as session:
-            if group:
+            if technology and group:
+                result = await session.run(
+                    """
+                    MATCH (s:System)-[:CONTAINS]->(c:Container)
+                    WHERE c.technology = $technology AND s.group = $group
+                    WITH DISTINCT s RETURN s ORDER BY s.name SKIP $skip LIMIT $limit
+                    """,
+                    technology=technology,
+                    group=group,
+                    skip=skip,
+                    limit=limit,
+                )
+            elif technology:
+                result = await session.run(
+                    """
+                    MATCH (s:System)-[:CONTAINS]->(c:Container)
+                    WHERE c.technology = $technology
+                    WITH DISTINCT s RETURN s ORDER BY s.name SKIP $skip LIMIT $limit
+                    """,
+                    technology=technology,
+                    skip=skip,
+                    limit=limit,
+                )
+            elif group:
                 result = await session.run(
                     "MATCH (s:System) WHERE s.group = $group RETURN s ORDER BY s.name SKIP $skip LIMIT $limit",
                     group=group,
@@ -330,6 +501,31 @@ class ArchitectureRepository:
                 "MATCH (s:System) WHERE s.group IS NOT NULL AND s.group <> '' RETURN DISTINCT s.group AS g ORDER BY g"
             )
             return [r["g"] for r in await result.data()]
+
+    async def get_all_technologies(self) -> list[str]:
+        """Distinct container technology values."""
+        async with self.driver.session() as session:
+            result = await session.run(
+                """
+                MATCH (c:Container)
+                WHERE c.technology IS NOT NULL AND c.technology <> ''
+                RETURN DISTINCT c.technology AS tech ORDER BY tech
+                """
+            )
+            return [r["tech"] for r in await result.data()]
+
+    async def get_technology_inventory(self) -> list[dict[str, Any]]:
+        """Per-technology list of system ids (for inventory view)."""
+        async with self.driver.session() as session:
+            result = await session.run(
+                """
+                MATCH (s:System)-[:CONTAINS]->(c:Container)
+                WHERE c.technology IS NOT NULL AND c.technology <> ''
+                WITH c.technology AS tech, collect(DISTINCT s.id) AS system_ids
+                RETURN tech, system_ids ORDER BY tech
+                """
+            )
+            return [{"technology": r["tech"], "system_ids": r["system_ids"]} for r in await result.data()]
 
     async def get_dependencies(
         self,
@@ -373,7 +569,7 @@ class ArchitectureRepository:
         filters: dict[str, Any] | None = None,
         limit: int = 20,
     ) -> list[dict[str, Any]]:
-        """Full-text search across systems, containers, components. Filters optional (e.g. group)."""
+        """Full-text search across systems, containers, components. Filters optional (group, technology)."""
         async with self.driver.session() as session:
             try:
                 cypher = """
@@ -385,6 +581,10 @@ class ArchitectureRepository:
                 if filters and filters.get("group"):
                     cypher += " AND node.group = $group"
                     params["group"] = filters["group"]
+                if filters and filters.get("technology"):
+                    # Only return Container nodes with this technology (System/Component have no technology)
+                    cypher += " AND (node:Container AND node.technology = $technology)"
+                    params["technology"] = filters["technology"]
                 cypher += " RETURN node, score ORDER BY score DESC LIMIT $limit"
                 result = await session.run(cypher, **params)
                 results = []

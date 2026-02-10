@@ -15,8 +15,20 @@
       <h1 class="app-title">EDDA</h1>
     </a>
     <nav class="app-nav">
-      <a routerLink="/architecture" class="app-nav-link">Architecture</a>
-      <app-search-bar />
+      <app-group-filter
+        [options]="groups()"
+        [value]="groupFilter()"
+        (valueChange)="setGroupFilter($event)"
+      />
+      <app-technology-filter
+        [options]="technologies()"
+        [value]="technologyFilter()"
+        (valueChange)="setTechnologyFilter($event)"
+      />
+      <app-search-bar
+        [groupFilter]="groupFilter()"
+        [technologyFilter]="technologyFilter()"
+      />
     </nav>
   </header>
   <main class="app-main">

@@ -11,21 +11,24 @@ def _vault():
 
 
 @router.get("/enterprise", response_model=dict)
-async def get_enterprise_view() -> dict[str, Any]:
-    """All systems and edges for the top-level C4 view."""
+async def get_enterprise_view(
+    technology: Optional[str] = Query(None, description="Filter to systems that contain a container with this technology"),
+) -> dict[str, Any]:
+    """All systems and edges for the top-level C4 view. Optional technology filter."""
     vault = _vault()
-    return await vault.get_enterprise_view()
+    return await vault.get_enterprise_view(technology=technology)
 
 
 @router.get("/systems", response_model=dict)
 async def list_systems(
     group: Optional[str] = Query(None),
+    technology: Optional[str] = Query(None, description="Filter systems that contain a container with this technology"),
     skip: int = Query(0, ge=0),
     limit: int = Query(50, le=100),
 ) -> dict[str, Any]:
-    """List all systems with optional group filter and pagination."""
+    """List all systems with optional group and technology filter and pagination."""
     vault = _vault()
-    systems = await vault.get_all_systems(group=group, skip=skip, limit=limit)
+    systems = await vault.get_all_systems(group=group, technology=technology, skip=skip, limit=limit)
     return {"systems": systems, "total": len(systems)}
 
 
@@ -51,6 +54,20 @@ async def list_system_versions(
     vault = _vault()
     versions = await vault.get_system_versions(system_id, limit=limit)
     return {"system_id": system_id, "versions": versions}
+
+
+@router.get("/systems/{system_id}/versions/diff", response_model=dict)
+async def get_version_diff(
+    system_id: str,
+    from_version: str = Query(..., alias="from", description="Source version id"),
+    to_version: str = Query(..., alias="to", description="Target version id"),
+) -> dict[str, Any]:
+    """Compare two architecture versions (containers and relationships added/removed/changed)."""
+    vault = _vault()
+    diff = await vault.get_version_diff(system_id, from_version, to_version)
+    if not diff:
+        raise HTTPException(status_code=404, detail="System or version not found")
+    return diff
 
 
 @router.get("/systems/{system_id}/containers/{container_id}", response_model=dict)

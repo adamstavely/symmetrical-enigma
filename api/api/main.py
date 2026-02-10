@@ -8,7 +8,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import systems, search, dependencies, groups, analyze, corrections
+from api.routers import systems, search, dependencies, groups, analyze, corrections, technologies, drift
 
 app = FastAPI(
     title="EDDA API",
@@ -32,6 +32,8 @@ app.include_router(dependencies.router, prefix="/api/v1", tags=["dependencies"])
 app.include_router(groups.router, prefix="/api/v1", tags=["groups"])
 app.include_router(analyze.router, prefix="/api/v1", tags=["analyze"])
 app.include_router(corrections.router, prefix="/api/v1", tags=["corrections"])
+app.include_router(technologies.router, prefix="/api/v1", tags=["technologies"])
+app.include_router(drift.router, prefix="/api/v1", tags=["drift"])
 
 
 @app.get("/health")

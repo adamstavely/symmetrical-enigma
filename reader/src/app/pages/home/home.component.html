@@ -30,7 +30,7 @@
           </p>
           <div class="hero-actions">
             <a routerLink="/architecture" class="btn-primary">View Architecture</a>
-            <a routerLink="/architecture" class="btn-secondary">Explore Diagram</a>
+            <a routerLink="/reference" class="btn-secondary">More about C4</a>
           </div>
         </div>
         <div class="hero-visual">
@@ -70,6 +70,16 @@
     <div class="features-inner">
       <h2 class="features-title">Key Features</h2>
       <div class="features-grid">
+        <a routerLink="/inventory" class="feature-card feature-card-link">
+          <div class="feature-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Technology inventory</h3>
+          <p class="feature-card-desc">See which container technologies are in use and which systems use them.</p>
+        </a>
         <article class="feature-card">
           <div class="feature-card-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -90,9 +100,9 @@
             </svg>
           </div>
           <h3 class="feature-card-title">C4 Diagrams</h3>
-          <p class="feature-card-desc">Explore enterprise, system, and container levels in an interactive, navigable diagram.</p>
+          <p class="feature-card-desc">Explore enterprise, system, and container levels in an interactive, navigable diagram. <a routerLink="/reference">Learn about the C4 model</a>.</p>
         </article>
-        <article class="feature-card">
+        <a routerLink="/drift" class="feature-card feature-card-link">
           <div class="feature-card-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="9" />
@@ -101,7 +111,7 @@
           </div>
           <h3 class="feature-card-title">Drift & History</h3>
           <p class="feature-card-desc">Detect drift from source and browse versioned snapshots of your architecture.</p>
-        </article>
+        </a>
       </div>
     </div>
   </section>

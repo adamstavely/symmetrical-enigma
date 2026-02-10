@@ -21,6 +21,7 @@ class Container(BaseModel):
 class Component(BaseModel):
     id: str
     name: str
+    container_id: str  # id of the Container this component belongs to
     description: str = ""
     responsibility: str = ""
     file_path: str = ""

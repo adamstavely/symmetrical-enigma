@@ -1,0 +1,171 @@
+<div class="reference">
+  <section class="ref-hero">
+    <div class="ref-hero-card">
+      <div class="ref-hero-bg" aria-hidden="true">
+        <div class="ref-hero-gradient"></div>
+        <svg class="ref-hero-svg" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="refBgGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d4a84b" stop-opacity="0.06" />
+              <stop offset="100%" stop-color="#d4a84b" stop-opacity="0.03" />
+            </linearGradient>
+            <pattern id="refGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#d4a84b" stroke-width="0.25" opacity="0.15" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#refBgGold)" />
+          <rect width="100%" height="100%" fill="url(#refGrid)" />
+        </svg>
+      </div>
+      <div class="ref-hero-content">
+        <h1 class="ref-hero-title">C4 Model Reference</h1>
+        <p class="ref-hero-subtitle">Understand the layers behind EDDA’s architecture diagrams</p>
+        <p class="ref-hero-description">
+          The C4 model is a developer-friendly way to describe and visualize software architecture. It uses a small set of
+          abstractions and diagram types so you can zoom from high-level context down to code. EDDA generates and
+          displays C4-style views of your systems—this reference explains what each layer means.
+        </p>
+        <div class="ref-hero-actions">
+          <a routerLink="/architecture" class="btn-primary">View Architecture</a>
+          <a href="https://c4model.com/" target="_blank" rel="noopener" class="btn-secondary">Official C4 site</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ref-content">
+    <div class="ref-inner">
+      <h2 class="ref-section-title">What is the C4 model?</h2>
+      <div class="ref-card ref-card-intro">
+        <p>
+          The <strong>C4 model</strong> was created by Simon Brown. The “C4” stands for four levels of static structure
+          diagrams: <strong>Context</strong>, <strong>Containers</strong>, <strong>Components</strong>, and
+          <strong>Code</strong>. Each level is a different “zoom” into the system:
+        </p>
+        <ul class="ref-list ref-list-bullet">
+          <li><strong>Context</strong> — The system and its users and external systems.</li>
+          <li><strong>Containers</strong> — Applications and data stores inside the system.</li>
+          <li><strong>Components</strong> — Functional building blocks inside a container.</li>
+          <li><strong>Code</strong> — Classes, interfaces, and other code elements (optional; often omitted).</li>
+        </ul>
+        <p>
+          You don’t need to use all four levels—system context and container diagrams are enough for many teams. The
+          model is notation- and tool-independent, so it works with any diagramming style.
+        </p>
+      </div>
+
+      <h2 class="ref-section-title">The four layers</h2>
+
+      <article class="ref-layer" id="layer-context">
+        <div class="ref-layer-header">
+          <span class="ref-layer-badge ref-layer-badge-context">Level 1</span>
+          <h3 class="ref-layer-title">System context (Context)</h3>
+        </div>
+        <div class="ref-card">
+          <p>
+            The <strong>software system</strong> is the top-level abstraction: something that delivers value to its
+            users (human or not). A system is typically what a single team builds, owns, and can change—often
+            corresponding to one codebase or repository. The system context diagram shows:
+          </p>
+          <ul class="ref-list ref-list-bullet">
+            <li>Your software system (the one you’re modelling)</li>
+            <li><strong>Users / actors</strong> — people or systems that use it</li>
+            <li><strong>External systems</strong> — other software systems yours depends on or that depend on you</li>
+          </ul>
+          <p>
+            In EDDA, the <strong>enterprise view</strong> shows multiple software systems (and their relationships);
+            selecting a system and viewing its “system” diagram is the context-level view for that system.
+          </p>
+        </div>
+      </article>
+
+      <article class="ref-layer" id="layer-container">
+        <div class="ref-layer-header">
+          <span class="ref-layer-badge ref-layer-badge-container">Level 2</span>
+          <h3 class="ref-layer-title">Containers</h3>
+        </div>
+        <div class="ref-card">
+          <p>
+            In C4, a <strong>container</strong> is not Docker—it’s an <strong>application</strong> or a
+            <strong>data store</strong> that must run for the system to work. It’s the boundary around running code or
+            stored data. Examples:
+          </p>
+          <ul class="ref-list ref-list-bullet">
+            <li>Server-side web app (e.g. Spring, ASP.NET, Node.js)</li>
+            <li>Client-side web app (e.g. Angular, React in the browser)</li>
+            <li>Mobile app, desktop app, CLI, batch job</li>
+            <li>Serverless function</li>
+            <li>Database, blob store, file system</li>
+          </ul>
+          <p>
+            If you have a server-rendered app that also sends a large JavaScript front-end, that’s often two
+            containers (server + client) because they run in different process spaces and communicate over the network.
+            In EDDA, the <strong>container diagram</strong> appears when you drill into a system and shows its
+            containers and how they depend on each other.
+          </p>
+        </div>
+      </article>
+
+      <article class="ref-layer" id="layer-component">
+        <div class="ref-layer-header">
+          <span class="ref-layer-badge ref-layer-badge-component">Level 3</span>
+          <h3 class="ref-layer-title">Components</h3>
+        </div>
+        <div class="ref-card">
+          <p>
+            A <strong>component</strong> is a grouping of related functionality behind a clear interface. Components are
+            <em>not</em> deployable by themselves—they live inside a container and run in the same process. In
+            object-oriented code, a component is often a set of classes behind an interface; in other languages it might
+            be a module or a set of functions.
+          </p>
+          <p>
+            Component diagrams zoom into one container and show how its responsibilities are split into components and
+            how they interact. In EDDA, when you open a container’s detail view, you can see its
+            <strong>components</strong> and their responsibilities, with dependencies between containers still visible
+            at the graph level.
+          </p>
+        </div>
+      </article>
+
+      <article class="ref-layer" id="layer-code">
+        <div class="ref-layer-header">
+          <span class="ref-layer-badge ref-layer-badge-code">Level 4</span>
+          <h3 class="ref-layer-title">Code (optional)</h3>
+        </div>
+        <div class="ref-card">
+          <p>
+            The <strong>code</strong> level zooms into a component and shows the actual building blocks: classes,
+            interfaces, functions, etc. Many teams skip this level and keep architecture at context, container, and
+            sometimes component level. EDDA focuses on system, container, and component levels; code-level diagrams are
+            typically produced by IDEs or dedicated code-visualization tools.
+          </p>
+        </div>
+      </article>
+
+      <h2 class="ref-section-title">How EDDA uses C4</h2>
+      <div class="ref-card ref-card-edda">
+        <p>
+          EDDA analyzes your repositories and infers a C4-style model stored in a graph (VAULT). The READER UI lets you
+          explore:
+        </p>
+        <ul class="ref-list ref-list-bullet">
+          <li><strong>Enterprise</strong> — multiple systems and relationships (above single-system context)</li>
+          <li><strong>System</strong> — one system and its containers (context + container level)</li>
+          <li><strong>Container</strong> — one system’s containers and their dependencies; drill into a container to see its components</li>
+        </ul>
+        <p>
+          So you get the equivalent of C4 context and container diagrams, plus component details where SCRIBE has
+          extracted them. The diagram notation (shapes, colors, optional AWS-style icons) is designed to be consistent
+          with C4’s idea of hierarchical, zoomable architecture.
+        </p>
+      </div>
+
+      <div class="ref-footer-note">
+        <p>
+          For the full specification, extra diagram types (e.g. system landscape, dynamic, deployment), and FAQs, see
+          <a href="https://c4model.com/" target="_blank" rel="noopener">c4model.com</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>

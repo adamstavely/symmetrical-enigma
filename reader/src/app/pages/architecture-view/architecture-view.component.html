@@ -15,8 +15,10 @@
           <app-version-picker
             [versions]="versions()"
             [selectedVersionId]="versionId()"
+            [compareWithVersionId]="compareWithVersionId()"
             (versionSelect)="onVersionSelect($event)"
             (clearVersion)="onVersionClear()"
+            (compareSelect)="onCompareSelect($event)"
           />
         }
         <button type="button" class="view-export-btn" (click)="openExport()">Export</button>
@@ -28,11 +30,19 @@
       />
     </div>
     <aside class="view-detail-section">
-      <app-system-detail
-        [system]="system() ?? null"
-        [container]="container() ?? null"
-        (containerSelect)="onContainerSelect($event)"
-      />
+      @if (versionDiff(); as diff) {
+        <app-version-diff
+          [diff]="diff"
+          [fromLabel]="versionLabel(diff.from_version_id)"
+          [toLabel]="versionLabel(diff.to_version_id)"
+        />
+      } @else {
+        <app-system-detail
+          [system]="system() ?? null"
+          [container]="container() ?? null"
+          (containerSelect)="onContainerSelect($event)"
+        />
+      }
     </aside>
   </div>
   <app-export-dialog

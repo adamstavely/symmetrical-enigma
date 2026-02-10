@@ -12,15 +12,23 @@ import type { ArchitectureVersion } from '../../models/architecture';
 export class VersionPickerComponent {
   @Input() versions: ArchitectureVersion[] = [];
   @Input() selectedVersionId: string | null = null;
+  @Input() compareWithVersionId: string | null = null;
   @Input() loading = false;
   @Output() versionSelect = new EventEmitter<string>();
   @Output() clearVersion = new EventEmitter<void>();
+  @Output() compareSelect = new EventEmitter<string | null>();
 
   onSelectChange(event: Event): void {
     const el = event.target as HTMLSelectElement;
     const id = el?.value ?? '';
     if (id) this.versionSelect.emit(id);
     else this.clearVersion.emit();
+  }
+
+  onCompareChange(event: Event): void {
+    const el = event.target as HTMLSelectElement;
+    const id = el?.value ?? '';
+    this.compareSelect.emit(id || null);
   }
 
   onClear(): void {
